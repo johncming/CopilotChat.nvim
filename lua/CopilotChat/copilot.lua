@@ -830,14 +830,29 @@ function Copilot:reset()
   return stopped
 end
 
+
+local function history_to_markdown(history)
+  local md = {}
+  for _, entry in ipairs(history) do
+    -- Add user messages with bold formatting
+    if entry.role == "user" then
+      table.insert(md, "**User:** " .. entry.content .. "\n\n")
+    -- Add assistant messages with regular formatting
+    elseif entry.role == "assistant" then
+      table.insert(md, "Assistant: " .. entry.content .. "\n\n")
+    end
+  end
+  return table.concat(md)
+end
+
 --- Save the history to a file
 ---@param name string: The name to save the history to
 ---@param path string: The path to save the history to
 function Copilot:save(name, path)
-  local history = vim.json.encode(self.history)
+  local history = history_to_markdown(self.history)
   path = vim.fn.expand(path)
   vim.fn.mkdir(path, 'p')
-  path = path .. '/' .. name .. '.json'
+  path = path .. '/' .. name .. '.md'
   local file = io.open(path, 'w')
   if not file then
     log.error('Failed to save history to ' .. path)
