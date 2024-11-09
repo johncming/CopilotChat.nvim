@@ -213,7 +213,10 @@ function M.find_for_query(copilot, opts)
       end, vim.api.nvim_list_bufs())
     )
   elseif context == 'buffer' then
-    table.insert(outline, M.build_outline(bufnr))
+    local outline_result = M.build_outline(bufnr)
+    if outline_result then
+      table.insert(outline, outline_result)
+    end
   end
 
   outline = vim.tbl_filter(function(item)
