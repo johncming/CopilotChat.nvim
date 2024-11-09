@@ -501,6 +501,7 @@ end
 function M.save(name, history_path)
   if not name or vim.trim(name) == '' then
     name = 'default'
+    name = string.format("copilot-%s", os.date("%Y-%m-%d-%H-%M"))
   else
     name = vim.trim(name)
   end
