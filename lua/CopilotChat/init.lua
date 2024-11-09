@@ -724,6 +724,10 @@ function M.setup(config)
 
       map_key(M.config.mappings.complete, bufnr, complete)
       map_key(M.config.mappings.reset, bufnr, M.reset)
+      map_key(M.config.mappings.reset, bufnr, function()
+        M.save(nil,nil)
+        M.reset()
+      end)
       map_key(M.config.mappings.close, bufnr, M.close)
 
       map_key(M.config.mappings.submit_prompt, bufnr, function()
