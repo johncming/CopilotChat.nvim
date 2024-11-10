@@ -42,6 +42,7 @@ local Chat = class(function(self, help, auto_insert, on_buf_create)
   self.spinner = nil
   self.separator = nil
   self.layout = nil
+  self.last_cursor = nil
 
   self.buf_create = function()
     local bufnr = vim.api.nvim_create_buf(false, true)
@@ -200,6 +201,9 @@ function Chat:open(config)
   elseif layout == 'replace' then
     self.winnr = vim.api.nvim_get_current_win()
     vim.api.nvim_win_set_buf(self.winnr, self.bufnr)
+    if not self.last_cursor then
+      vim.api.nvim_win_set_cursor(self.winnr, self.last_cursor)
+    end
   end
 
   self.layout = layout
@@ -224,6 +228,8 @@ function Chat:close(bufnr)
   if self.spinner then
     self.spinner:finish()
   end
+
+  self.last_cursor = vim.api.nvim_win_get_cursor(0)
 
   if self:visible() then
     if self:active() then
@@ -259,7 +265,8 @@ function Chat:follow()
     return
   end
 
-  vim.api.nvim_win_set_cursor(self.winnr, { last_line + 1, last_column })
+  -- 实际上，禁用该函数的作用
+  -- vim.api.nvim_win_set_cursor(self.winnr, { last_line + 1, last_column })
 end
 
 function Chat:finish(msg)
